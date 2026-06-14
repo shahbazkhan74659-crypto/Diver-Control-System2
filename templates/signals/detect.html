@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Diver Control System
+    </title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<section class="camera-page">
+
+    <video
+        id="video"
+        autoplay
+        playsinline
+        muted>
+    </video>
+
+    <canvas id="hand-canvas"></canvas>
+
+    <div class="hud">
+
+        <div class="hud-left">
+
+            <div id="connection-status">
+                DISCONNECTED
+            </div>
+
+            <div>
+                Gesture :
+                <span id="gesture-message">
+                    WAITING...
+                </span>
+            </div>
+
+            <div>
+                Type :
+                <span id="gesture-type">
+                    NONE
+                </span>
+            </div>
+
+            <div>
+                Crew :
+                <span id="message-status">
+                    WAITING...
+                </span>
+            </div>
+
+        </div>
+
+        <div class="hud-right">
+
+            <div id="fps">
+                FPS: 0
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="{% static 'js/main.js' %}"></script>
+
+</body>
+
+</html>
