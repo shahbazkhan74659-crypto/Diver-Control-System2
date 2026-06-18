@@ -59,6 +59,7 @@ body{
     height:100%;
     pointer-events:none;
     z-index:5;
+    transform:scaleX(-1);
 }
 
 /* =========================
@@ -122,6 +123,7 @@ body{
 /* =========================
    HUD VALUES
 ========================= */
+
 
 #gesture-message,
 #gesture-type,
