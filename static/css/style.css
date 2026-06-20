@@ -13,12 +13,20 @@
 ========================= */
 
 body{
-    background:#000;
+    margin: 0;
+    background:black;
     color:#00f0ff;
-    font-family:Consolas, monospace;
-    width:100vw;
-    height:100vh;
     overflow:hidden;
+}
+
+/* =========================
+   Clock
+========================= */
+
+#clock{
+    font-size:1.2rem;
+    margin-bottom:10px;
+    color:#00f0ff;
 }
 
 /* =========================
@@ -26,13 +34,11 @@ body{
 ========================= */
 
 .camera-page{
-    position:relative;
-    width:100vw;
-    height:100vh;
-    overflow:hidden;
+    position:fixed;
+    inset:0;
 }
 
-/* =========================
+/*=========================
    VIDEO FEED
 ========================= */
 
@@ -40,10 +46,14 @@ body{
     position:absolute;
     top:0;
     left:0;
-    width:100%;
-    height:100%;
+
+    width:100vw;
+    height:100vh;
+
     object-fit:cover;
+
     transform:scaleX(-1);
+
     z-index:1;
 }
 
@@ -51,14 +61,18 @@ body{
    HAND OVERLAY
 ========================= */
 
-#hand-canvas{
+#hand_canvas{
     position:absolute;
     top:0;
     left:0;
-    width:100%;
-    height:100%;
+
+    width:100vw;
+    height:100vh;
+
     pointer-events:none;
+
     z-index:5;
+
     transform:scaleX(-1);
 }
 
