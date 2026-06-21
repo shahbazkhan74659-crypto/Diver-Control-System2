@@ -1,4 +1,4 @@
-console.log("STYLE VERSION 999");
+console.log("Laptop A Liva Page Loaded");
 
 /*======================================
    DOM Elements
@@ -14,6 +14,13 @@ const gestureMessage = document.getElementById("gesture-message");
 const gestureType = document.getElementById("gesture-type");
 const messageStatus = document.getElementById("message-status");
 const fps = document.getElementById("fps");
+
+/*======================================
+   FPS Calculation
+======================================*/
+
+let lastFrameTime = performance.now();
+let fpsAverage = 0;
 
 /*======================================
    Live Clock
@@ -64,12 +71,14 @@ socket.onclose = () => {
   console.log("WebSocket disconnected");
   connectionStatus.textContent = "DISCONNECTED";
   connectionStatus.style.color = "#ff4444";
+  messageStatus.textContent = "FAILED";
 };
 
 socket.onerror = () => {
   console.log("WebSocket error");
   connectionStatus.textContent = "ERROR";
   connectionStatus.style.color = "#ff0000";
+  messageStatus.textContent = "FAILED";
 };
 
 /*======================================
@@ -85,8 +94,14 @@ const HOLD_TIME = 700;
 ======================================*/
     
 const crewMessages = {
-
-}
+  "OPEN_PALM": "START",
+  "THUMBS_UP": "GOOD JOB",
+  "THUMBS_DOWN": "SLOW DOWN",
+  "POINT": "CHANGE DIRECTION",
+  "PEACE": "NEED SUPPORT",
+  "THREE": "TEAM FORMATION",
+  "UNKNOWN": "ANALYZING..."
+};
 
 /*======================================
    Receiving Messages (Viewer Mode)
@@ -159,6 +174,63 @@ function drawHandSkeleton(landmarks) {
 }
 
 /*======================================
+   Gesture Classification
+======================================*/
+
+function classifyGesture(lm) {
+  if (!lm || lm.length < 21) return null;
+
+  const thumb = lm[4];
+  const index = lm[8];
+  const middle = lm[12];
+  const ring = lm[16];
+  const pinky = lm[20];
+
+  const indexUp = index.y < lm[6].y;
+  const middleUp = middle.y < lm[10].y;
+  const ringUp = ring.y < lm[14].y;
+  const pinkyUp = pinky.y < lm[18].y;
+
+  const thumbUp = thumb.y < lm[3].y;
+  const thumbDown = thumb.y > lm[3].y;
+
+  const allUp = indexUp && middleUp && ringUp && pinkyUp;
+  const noneUp = !indexUp && !middleUp && !ringUp && !pinkyUp;
+
+  // 👍 THUMBS UP
+  if (thumbUp && noneUp) {
+    return "THUMBS_UP";
+  }
+
+  // 👎 THUMBS DOWN
+  if (thumbDown && noneUp) {
+    return "THUMBS_DOWN";
+  }
+
+  // ✋ OPEN PALM
+  if (allUp) {
+    return "OPEN_PALM";
+  }
+
+  // ☝ POINT
+  if (indexUp && !middleUp && !ringUp && !pinkyUp) {
+    return "POINT";
+  }
+
+  // ✌ PEACE
+  if (indexUp && middleUp && !ringUp && !pinkyUp) {
+    return "PEACE";
+  }
+
+  // 3️⃣ THREE
+  if (indexUp && middleUp && ringUp && !pinkyUp) {
+    return "THREE";
+  }
+
+  return "UNKNOWN";
+}
+
+/*======================================
    Producer Mode: Send Data to Server
 ======================================*/
 
@@ -177,6 +249,12 @@ if (isProducer) {
   });
 
   hands.onResults((results) => {
+    const now = performance.now();
+    const instantFPS = 1000 / (now - lastFrameTime);
+    lastFrameTime = now;
+    fpsAverage =
+    fpsAverage * 0.9 + instantFPS * 0.1;
+    fps.textContent = `FPS: ${Math.round(fpsAverage)}`;
     if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
       console.log("onResults fired");
       gestureMessage.textContent = "No hand detected";
@@ -189,18 +267,20 @@ if (isProducer) {
     const landmarks = results.multiHandLandmarks[0]; 
     drawHandSkeleton(landmarks);
     const gesture = classifyGesture(landmarks);
+    gestureType.textContent = gesture || "UNKNOWN";
     console.log(gesture);
     
     if (!gesture) {
-      status.textContent = "Unknown gesture";
+      gestureMessage.textContent = "Unknown gesture";
       return;
     }
     
-    status.textContent = crewMessages[gesture];
-    
+    gestureMessage.textContent = crewMessages[gesture];
+
     if (gesture !== lastGesture) {
       lastGesture = gesture;
       holdStart = performance.now();
+      messageStatus.textContent = "SENDING...";
       return;
     }
     
@@ -211,6 +291,7 @@ if (isProducer) {
         message: crewMessages[gesture],
         time: new Date().toISOString()
       }));
+      messageStatus.textContent = "SENT";
       lastGesture = null;
       holdStart = null;
     }
