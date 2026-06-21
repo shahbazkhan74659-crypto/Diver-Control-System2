@@ -1,0 +1,168 @@
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/* =========================
+   BODY
+========================= */
+
+body{
+    margin: 0;
+    background:black;
+    color:#00f0ff;
+    overflow:hidden;
+}
+
+/* =========================
+   Clock
+========================= */
+
+#clock{
+    font-size:1.2rem;
+    margin-bottom:10px;
+    color:#00f0ff;
+}
+
+/* =========================
+   PAGE
+========================= */
+
+.camera-page{
+    position:fixed;
+    inset:0;
+}
+
+/*=========================
+   VIDEO FEED
+========================= */
+
+#video{
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100vw;
+    height:100vh;
+
+    object-fit:cover;
+
+    transform:scaleX(-1);
+
+    z-index:1;
+}
+
+/* =========================
+   HAND OVERLAY
+========================= */
+
+#hand_canvas{
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100vw;
+    height:100vh;
+
+    pointer-events:none;
+
+    z-index:5;
+
+    transform:scaleX(-1);
+}
+
+/* =========================
+   HUD CONTAINER
+========================= */
+
+.hud{
+    position:absolute;
+    top:20px;
+    left:20px;
+    right:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    z-index:20;
+}
+
+/* =========================
+   LEFT PANEL
+========================= */
+
+.hud-left{
+    min-width:260px;
+    background:rgba(0,0,0,0.55);
+    border-left:3px solid #00f0ff;
+    padding:15px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    font-weight:bold;
+    text-shadow:0 0 10px #00f0ff;
+    backdrop-filter:blur(4px);
+}
+
+/* =========================
+   RIGHT PANEL
+========================= */
+
+.hud-right{
+    background:rgba(0,0,0,0.55);
+    padding:15px 18px;
+    font-weight:bold;
+    text-shadow:0 0 10px #00f0ff;
+    backdrop-filter:blur(4px);
+}
+
+/* =========================
+   STATUS COLORS
+========================= */
+
+#connection-status{
+    color:#ff4444;
+    font-weight:bold;
+}
+
+#message-status{
+    color:#00ff00;
+    font-weight:bold;
+}
+
+/* =========================
+   HUD VALUES
+========================= */
+
+
+#gesture-message,
+#gesture-type,
+#fps{
+    color:#ffffff;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+    .hud{
+        top:10px;
+        left:10px;
+        right:10px;
+    }
+    .hud-left{
+        min-width:200px;
+        font-size:0.85rem;
+        padding:10px;
+    }
+    .hud-right{
+        font-size:0.85rem;
+        padding:10px;
+    }
+}
+
